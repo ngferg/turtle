@@ -28,12 +28,13 @@ screen.screensize(300, 300)
 
 timmy.left(random.randint(0,360))
 timmy.forward(1)
+timmy.speed(0)
 
 while timmy_inbounds(screen, timmy):
-    timmy.forward(1)
+    timmy.forward(3)
     table.add_row([timmy.xcor(), timmy.ycor()])
-    timmy.left(random.randint(-10, 10))
+    timmy.left(random.randint(-15, 15))
                   
 
-
 print(table)
+screen.bye()
