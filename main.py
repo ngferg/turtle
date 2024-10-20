@@ -26,7 +26,8 @@ screen = Screen()
 print(f'{screen.canvheight}, {screen.canvwidth}')
 screen.screensize(300, 300)
 
-timmy.home()
+timmy.left(random.randint(0,360))
+timmy.forward(1)
 
 while timmy_inbounds(screen, timmy):
     timmy.forward(1)
