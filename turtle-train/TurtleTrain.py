@@ -59,17 +59,18 @@ class TurtleTrain(object):
         return in_left and in_right and is_above and is_below
 
     def turn_train(self, degrees: int):
-        self.get_conductor().setheading(degrees)
-        turn_on = 1
-        turtle_num = 0
-        for turtle in self.turtles[1:]:
-            turn_on += 5
-            turtle_num += 1
-            self.turns.append({
-                'turn_on': turn_on,
-                'turtle_num': turtle_num,
-                'heading': degrees
-            })
+        if degrees != self.get_conductor().heading() + 180 and degrees != self.get_conductor().heading() - 180:  
+            self.get_conductor().setheading(degrees)
+            turn_on = 1
+            turtle_num = 0
+            for _ in self.turtles[1:]:
+                turn_on += 5
+                turtle_num += 1
+                self.turns.append({
+                    'turn_on': turn_on,
+                    'turtle_num': turtle_num,
+                    'heading': degrees
+                })
 
     def random_color(self):
         r = random.randint(0, 255)
