@@ -31,7 +31,7 @@ timmy.forward(1)
 timmy.speed(0)
 
 while timmy_inbounds(screen, timmy):
-    timmy.forward(3)
+    timmy.forward(2.5)
     table.add_row([timmy.xcor(), timmy.ycor()])
     timmy.left(random.randint(-15, 15))
                   
