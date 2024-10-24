@@ -5,9 +5,11 @@ import random
 class TurtleTrain(object):
     def __init__(self, turtles: list[turtle.Turtle]):
         self.turtles = turtles
-        self.turns = []
+        self.turns = [[]]
+        self.score = 0
 
     def add_turtle(self):
+        self.score += 1
         new_turtle = turtle.Turtle()
         new_turtle.penup()
         new_turtle.shape('turtle')
@@ -25,22 +27,25 @@ class TurtleTrain(object):
         new_turtle.setheading(self.get_caboose().heading())
         new_turtle.color(self.random_color())
         self.turtles.append(new_turtle)
-        if self.turns.__len__() > 0:
-            self.turns.append({
-                'turn_on': self.turns[-1]['turn_on'] + 5,
-                'turtle_num': self.turns[-1]['turtle_num'] + 1,
-                'heading': self.turns[-1]['heading']
-
-            })
+        for turn_list in self.turns:
+            if turn_list.__len__() > 0:
+                turn_list.append({
+                    'turn_on': turn_list[-1]['turn_on'] + 5,
+                    'turtle_num': turn_list[-1]['turtle_num'] + 1,
+                    'heading': turn_list[-1]['heading']
+                })
 
     def move_turtles(self, distance: int):
         i = 0
-        for turn in self.turns:
-            turn['turn_on'] = turn['turn_on'] - 1
-            if turn['turn_on'] == 0:
-                self.turtles[turn['turtle_num']].setheading(turn['heading'])
-                self.turns = self.turns[1:]
-            i += 1
+        for turn_list in self.turns:
+            for turn in turn_list:
+                turn['turn_on'] = turn['turn_on'] - 1
+                if turn['turn_on'] == 0:
+                    self.turtles[turn['turtle_num']].setheading(turn['heading'])
+                    turn_list = turn_list[1:]
+                i += 1
+                if turn_list.__len__() == 0:
+                    self.turns = self.turns[1:]
         for turtle in self.turtles:
             turtle.forward(distance)
 
@@ -63,14 +68,16 @@ class TurtleTrain(object):
             self.get_conductor().setheading(degrees)
             turn_on = 1
             turtle_num = 0
+            turn = []
             for _ in self.turtles[1:]:
                 turn_on += 5
                 turtle_num += 1
-                self.turns.append({
+                turn.append({
                     'turn_on': turn_on,
                     'turtle_num': turtle_num,
                     'heading': degrees
                 })
+            self.turns.append(turn)
 
     def random_color(self):
         r = random.randint(0, 255)
