@@ -1,6 +1,7 @@
 import turtle
 import random
 import TurtleTrain
+from scoreboard import Scoreboard
 
 TICK_RATE = 10
 
@@ -28,17 +29,7 @@ pellet.shape('square')
 pellet.shapesize(.5, .5)
 pellet.setposition(random.randrange(int((-1 * screen_size[0]/2) + 25), int(screen_size[0]/2 - 25), 25), random.randrange(int((-1 * screen_size[1]/2) + 30), int(screen_size[1]/2 - 30), 25))
 
-score_text = turtle.Turtle()
-score_text.penup()
-score_text.goto(screen_size[0]/2 - 30, -1 * (screen_size[1]/2) + 10)
-score_text.color(0, 0, 0)
-score_text_style = ('Arial', 10, 'bold')
-score_text.hideturtle()
-
-def write_score():
-    score_text.clear()
-    score_text.write(f'Score: {train.score}', font=score_text_style, align='right')
-
+score_board = Scoreboard(screen_size)
 
 def tick():
     train.move_turtles(25)
@@ -52,7 +43,7 @@ def tick():
         if train.intersects(other_turtle):
             game_over()
     if not paused:
-        write_score()
+        score_board.write_score(train.score)
         screen.ontimer(tick, int(1000/TICK_RATE))
 
 def face(degrees: int):
@@ -67,10 +58,7 @@ def timmy_inbounds(timmy: turtle.Turtle) -> bool:
     return t_x < s_x and t_x > s_x * -1 and t_y < s_y and t_y > s_y * -1
 
 def game_over():
-    score_text.clear()
-    score_text.goto(0, 0)
-    score_text_style = score_text_style = ('Arial', 24, 'bold')
-    score_text.write(f'GAME OVER! Score: {train.score}', align='center', font=score_text_style)
+    score_board.write_game_over(train.score)
     screen.exitonclick()
     exit()
 
@@ -81,8 +69,7 @@ def pause():
         tick()
     else:
         paused = True
-        score_text.clear()
-        score_text.write('Paused', font=score_text_style, align='right')
+        score_board.write_paused()
 
 screen.onkeypress(game_over, 'q')
 screen.onkeypress(lambda: face(90), 'w')
