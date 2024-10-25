@@ -2,7 +2,9 @@ import turtle
 import random
 import TurtleTrain
 
+TICK_RATE = 10
 
+paused = False
 screen_size = (600,400)
 
 screen = turtle.Screen()
@@ -24,7 +26,7 @@ pellet = turtle.Turtle()
 pellet.penup()
 pellet.shape('square')
 pellet.shapesize(.5, .5)
-pellet.setposition(random.randint(int((-1 * screen_size[0]/2) + 10), int(screen_size[0]/2 - 10)), random.randint(int((-1 * screen_size[1]/2) + 10), int(screen_size[1]/2 - 10)))
+pellet.setposition(random.randrange(int((-1 * screen_size[0]/2) + 25), int(screen_size[0]/2 - 25), 25), random.randrange(int((-1 * screen_size[1]/2) + 30), int(screen_size[1]/2 - 30), 25))
 
 score_text = turtle.Turtle()
 score_text.penup()
@@ -39,18 +41,19 @@ def write_score():
 
 
 def tick():
-    train.move_turtles(5)
+    train.move_turtles(25)
     screen.update()
     if not timmy_inbounds(train.get_conductor()):
         game_over()
     if train.intersects(pellet):
-        pellet.setposition(random.randint(int((-1 * screen_size[0]/2) + 10), int(screen_size[0]/2 - 10)), random.randint(int((-1 * screen_size[1]/2) + 10), int(screen_size[1]/2 - 10)))
+        pellet.setposition(random.randrange(int((-1 * screen_size[0]/2) + 25), int(screen_size[0]/2 - 25), 25), random.randrange(int((-1 * screen_size[1]/2) + 30), int(screen_size[1]/2 - 30), 25))
         train.add_turtle()
     for other_turtle in train.turtles[1:]:
         if train.intersects(other_turtle):
             game_over()
-    write_score()
-    screen.ontimer(tick, int(1000/60))
+    if not paused:
+        write_score()
+        screen.ontimer(tick, int(1000/TICK_RATE))
 
 def face(degrees: int):
     train.turn_train(degrees)
@@ -71,12 +74,23 @@ def game_over():
     screen.exitonclick()
     exit()
 
+def pause():
+    global paused
+    if paused:
+        paused = False
+        tick()
+    else:
+        paused = True
+        score_text.clear()
+        score_text.write('Paused', font=score_text_style, align='right')
+
 screen.onkeypress(game_over, 'q')
 screen.onkeypress(lambda: face(90), 'w')
 screen.onkeypress(lambda: face(180), 'a')
 screen.onkeypress(lambda: face(270), 's')
 screen.onkeypress(lambda: face(0), 'd')
+screen.onkeypress(pause, 'p')
 
-screen.ontimer(tick, int(1000/60))
+screen.ontimer(tick, int(1000/TICK_RATE))
 
 screen.mainloop()
